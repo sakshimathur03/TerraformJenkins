@@ -1,61 +1,35 @@
-terraform {
-  required_providers {
-    azurerm = {
-      source  = "hashicorp/azurerm"
-      version = ">=3.0"
-    }
-  }
-}
-
 provider "azurerm" {
   features {}
-  subscription_id = var.subscription_id
 }
 
-# Generate a random suffix for unique app names
-resource "random_string" "suffix" {
-  length  = 6
-  special = false
-  upper   = false
-}
-
-#  Resource Group
+# Define the Resource Group
 resource "azurerm_resource_group" "rg" {
-  name     = var.resource_group_name
-  location = var.location
+  name     = "myResourceGroup"
+  location = "East US"
 }
 
-# App Service Plan
+# Define the Service Plan (Fixed Missing Arguments)
 resource "azurerm_service_plan" "plan" {
-  name                = var.app_service_plan_name
+  name                = "myAppServicePlan"
   location            = azurerm_resource_group.rg.location
   resource_group_name = azurerm_resource_group.rg.name
-  kind                = "Linux"
-  reserved            = true
+  os_type             = "Linux"    # Change to "Windows" if needed
+  sku_name            = "B1"       # Example SKU: F1 (Free), B1 (Basic), P1V2 (Premium)
+}
 
-  sku {
-    tier = "Standard"
-    size = "S1"
+# Define the App Service
+resource "azurerm_linux_web_app" "app" {
+  name                = "myWebApp"
+  location            = azurerm_resource_group.rg.location
+  resource_group_name = azurerm_resource_group.rg.name
+  service_plan_id     = azurerm_service_plan.plan.id
+
+  site_config {
+    always_on = true
   }
 }
 
-#  App Service (Now references `random_string.suffix.result` correctly)
-resource "azurerm_app_service" "app" {
-  name                = "myapp-terraform-${random_string.suffix.result}"
-  location            = azurerm_resource_group.rg.location
-  resource_group_name = azurerm_resource_group.rg.name
-  app_service_plan_id = azurerm_service_plan.plan.id
-
-  depends_on = [azurerm_service_plan.plan]
-}
-
-#  Deployment Slot
-resource "azurerm_app_service_slot" "slot" {
-  name                = var.deployment_slot_name
-  app_service_name    = azurerm_app_service.app.name
-  resource_group_name = azurerm_resource_group.rg.name
-  location            = azurerm_resource_group.rg.location
-  app_service_plan_id = azurerm_service_plan.plan.id
-
-  depends_on = [azurerm_app_service.app]
+# Output App Service URL
+output "app_service_url" {
+  value = azurerm_linux_web_app.app.default_site_hostname
 }
