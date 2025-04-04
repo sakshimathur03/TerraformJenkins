@@ -9,7 +9,14 @@ terraform {
 
 provider "azurerm" {
   features {}
-  subscription_id = "2f1ef4d2-8798-474f-81d1-d2fc16c553b6"
+  subscription_id = var.subscription_id
+}
+
+# Generate a unique suffix for app service name
+resource "random_string" "suffix" {
+  length  = 6
+  special = false
+  upper   = false
 }
 
 # Resource Group
@@ -18,6 +25,7 @@ resource "azurerm_resource_group" "rg" {
   location = var.location
 }
 
+# App Service Plan
 resource "azurerm_service_plan" "plan" {
   name                = var.app_service_plan_name
   location            = azurerm_resource_group.rg.location
@@ -31,24 +39,23 @@ resource "azurerm_service_plan" "plan" {
   }
 }
 
-
-
 # App Service
 resource "azurerm_app_service" "app" {
   name                = var.app_service_name
   location            = azurerm_resource_group.rg.location
   resource_group_name = azurerm_resource_group.rg.name
-  app_service_plan_id = azurerm_app_service_plan.plan.id
+  app_service_plan_id = azurerm_service_plan.plan.id
+
+  depends_on = [azurerm_service_plan.plan]
 }
 
-# Deployment Slot (Fixed)
+# Deployment Slot
 resource "azurerm_app_service_slot" "slot" {
   name                = var.deployment_slot_name
   app_service_name    = azurerm_app_service.app.name
   resource_group_name = azurerm_resource_group.rg.name
   location            = azurerm_resource_group.rg.location
-
-  app_service_plan_id = azurerm_app_service_plan.plan.id
+  app_service_plan_id = azurerm_service_plan.plan.id
 
   depends_on = [azurerm_app_service.app]
 }
