@@ -15,10 +15,15 @@ variable "app_service_plan_name" {
 
 variable "app_service_name" {
   type    = string
-  default = "MyAppTerraform"
+  default = "myapp-terraform-${random_string.suffix.result}"
 }
 
 variable "deployment_slot_name" {
   type    = string
-  default = "staging-slot" # Ensure it follows Azure naming rules
+  default = "staging_slot"
+}
+
+variable "subscription_id" {
+  type    = string
+  default = "2f1ef4d2-8798-474f-81d1-d2fc16c553b6"
 }
