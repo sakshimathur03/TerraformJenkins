@@ -12,14 +12,14 @@ provider "azurerm" {
   subscription_id = var.subscription_id
 }
 
-# Generate a unique suffix for app service name
+# Generate a random suffix for unique app names
 resource "random_string" "suffix" {
   length  = 6
   special = false
   upper   = false
 }
 
-# Resource Group
+#  Resource Group
 resource "azurerm_resource_group" "rg" {
   name     = var.resource_group_name
   location = var.location
@@ -39,9 +39,9 @@ resource "azurerm_service_plan" "plan" {
   }
 }
 
-# App Service
+#  App Service (Now references `random_string.suffix.result` correctly)
 resource "azurerm_app_service" "app" {
-  name                = var.app_service_name
+  name                = "myapp-terraform-${random_string.suffix.result}"
   location            = azurerm_resource_group.rg.location
   resource_group_name = azurerm_resource_group.rg.name
   app_service_plan_id = azurerm_service_plan.plan.id
@@ -49,7 +49,7 @@ resource "azurerm_app_service" "app" {
   depends_on = [azurerm_service_plan.plan]
 }
 
-# Deployment Slot
+#  Deployment Slot
 resource "azurerm_app_service_slot" "slot" {
   name                = var.deployment_slot_name
   app_service_name    = azurerm_app_service.app.name
