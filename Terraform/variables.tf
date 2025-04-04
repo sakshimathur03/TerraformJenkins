@@ -1,6 +1,6 @@
 variable "location" {
   type    = string
-  default = "East US" # Change if your subscription restricts this region
+  default = "East US"
 }
 
 variable "resource_group_name" {
@@ -11,11 +11,6 @@ variable "resource_group_name" {
 variable "app_service_plan_name" {
   type    = string
   default = "asp-my-app"
-}
-
-variable "app_service_name" {
-  type    = string
-  default = "myapp-terraform-${random_string.suffix.result}"
 }
 
 variable "deployment_slot_name" {
