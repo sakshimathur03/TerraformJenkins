@@ -15,6 +15,10 @@ variable "app_service_plan_name" {
 
 variable "app_service_name" {
   type    = string
-  default = "WebAppTerraform"
+  default = "MyAppTerraform"
 }
 
+variable "deployment_slot_name" {
+  type    = string
+  default = "staging-slot" # Ensure it follows Azure naming rules
+}
