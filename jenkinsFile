@@ -8,10 +8,10 @@ pipeline {
  stages {
  stage('Terraform Intra init') {
  steps {
- dir('Terraform') {
- bat 'terraform init'
-bat 'terraform plan -out=tfplan'
-bat 'terraform apply -auto-approve tfplan'
+  dir('Terraform') {
+     bat 'terraform init'
+     bat 'terraform plan -out=tfplan'
+     bat 'terraform apply -auto-approve tfplan'
 
 
  }
