@@ -1,7 +1,7 @@
 variable "resource_group_name" {
   description = "The name of the resource group."
   type        = string
-  default = "rg-jenkins"
+  default = "rg-terraform-jenkins"
 }
 
 variable "location" {
@@ -13,7 +13,7 @@ variable "location" {
 variable "service_plan_name" {
   description = "The name of the App Service Plan."
   type        = string
-  default = "my-app-plan"
+  default = "my-plan"
 }
 
 variable "sku_name" {
@@ -31,5 +31,5 @@ variable "os_type" {
 variable "app_service_name" {
   description = "The name of the App Service."
   type        = string
-  default = "MyAppTerraform"
+  default = "MyTerraformApp"
 }
