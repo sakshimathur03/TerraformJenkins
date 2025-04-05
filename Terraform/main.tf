@@ -31,9 +31,3 @@ resource "azurerm_windows_web_app" "serviceApp" {
     
 }
 
-resource "azurerm_windows_web_app_slot" "deploySlot" {
-  app_service_id = azurerm_windows_web_app.serviceApp.id
-  name = var.linux_web_app_slot_name
-  site_config {
-  }
-}
