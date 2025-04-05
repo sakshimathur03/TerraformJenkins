@@ -13,41 +13,43 @@ pipeline {
                 git branch: 'main', url: 'https://github.com/sakshimathur03/TerraformJenkins.git'
             }
         }
-        stage('Terraform Init') {
-          steps {
-           dir('Terraform') {
-              bat 'terraform init'
-               bat 'terraform plan -out=tfplan'
-               bat 'terraform apply -auto-approve tfplan'
- }
- }
- }
-    stage('Publish .NET 8 Web API') {
-       steps {
-          dir('WebApplication3') {
-              bat 'dotnet restore'
-                bat 'dotnet build --configuration Release'
-                bat 'dotnet publish -c Release -o ./publish'
-            }
- }
- }
- 
 
+        stage('Terraform Init') {
+            steps {
+                dir('Terraform') {
+                    bat 'terraform init'
+                    bat 'terraform plan -out=tfplan'
+                    bat 'terraform apply -auto-approve tfplan'
+                }
+            }
+        }
+
+        stage('Publish .NET 8 Web API') {
+            steps {
+                dir('WebApplication3') {
+                    bat 'dotnet restore'
+                    bat 'dotnet build --configuration Release'
+                    bat 'dotnet publish -c Release -o ./publish'
+                }
+            }
+        }
 
         stage('Deploy') {
             steps {
-                withCredentials([
-                    azureServicePrincipal(
-                        credentialsId: env.AZURE_CREDENTIALS_ID,
-                        subscriptionIdVariable: 'AZURE_SUBSCRIPTION_ID',
-                        clientIdVariable: 'AZURE_CLIENT_ID',
-                        clientSecretVariable: 'AZURE_CLIENT_SECRET',
-                        tenantIdVariable: 'AZURE_TENANT_ID'
-                    )
-                ]) {
-                    bat "az login --service-principal -u %AZURE_CLIENT_ID% -p %AZURE_CLIENT_SECRET% --tenant %AZURE_TENANT_ID%"
-                    bat "powershell Compress-Archive -Path ./publish/* -DestinationPath ./publish.zip -Force"
-                    bat "az webapp deploy --resource-group %RESOURCE_GROUP% --name %APP_SERVICE_NAME% --src-path ./publish.zip --type zip"
+                withCredentials([string(credentialsId: env.AZURE_CREDENTIALS_ID, variable: 'AZURE_SECRET_JSON')]) {
+                    script {
+                        def json = readJSON text: AZURE_SECRET_JSON
+
+                        def clientId = json.clientId
+                        def clientSecret = json.clientSecret
+                        def tenantId = json.tenantId
+                        def subscriptionId = json.subscriptionId
+
+                        bat "az login --service-principal -u ${clientId} -p ${clientSecret} --tenant ${tenantId}"
+                        bat "az account set --subscription ${subscriptionId}"
+                        bat "powershell Compress-Archive -Path WebApplication3/publish/* -DestinationPath publish.zip -Force"
+                        bat "az webapp deploy --resource-group ${env.RESOURCE_GROUP} --name ${env.APP_SERVICE_NAME} --src-path publish.zip --type zip"
+                    }
                 }
             }
         }
