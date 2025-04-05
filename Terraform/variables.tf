@@ -1,35 +1,51 @@
-variable "resource_group_name" {
-  description = "The name of the resource group."
-  type        = string
-  default = "rg-terraform-jenkins"
+variable "subscription_id" {
+  description = "Subscription id of the account"
+  type = string
+  default = "3354a426-5b85-4323-9efe-9581e63d9653"
 }
 
 variable "location" {
-  description = "The Azure region where resources will be created."
-  type        = string
-  default = "eastus2"
+    description = "location of service"
+    type = string
+    default = "eastus"
+}
+variable "resource_group_name" {
+  description = "resource group name"
+  type = string
+  default = "rg-jenkins-terraform"
+}
+
+variable "os" {
+  description = "Operating system"
+  type = string
+  default = "Linux"
 }
 
 variable "service_plan_name" {
-  description = "The name of the App Service Plan."
-  type        = string
-  default = "my-plan"
+  description = "Name of the service plan"
+  type = string
+  default = "myappserviceplan"
 }
 
 variable "sku_name" {
-  description = "The SKU tier for the App Service Plan."
-  type        = string
-  default     = "B1" # Change as needed (e.g., F1, P1V2)
+  description = "Pricing plan of the azure service plan"
+  type = string
+  default = "standard"
 }
 
-variable "os_type" {
-  description = "The operating system for the App Service (Linux or Windows)."
-  type        = string
-  default     = "Linux"
+variable "linux_web_app_name" {
+  description = "name of the app service"
+  type = string
+  default = "webapijenkins3425"
+}
+variable "pricing_plan" {
+  description = "Pricing plan of the azure service plan"
+  type = string
+  default = "S1"
 }
 
-variable "app_service_name" {
-  description = "The name of the App Service."
-  type        = string
-  default = "MyTerraformApp"
+variable "linux_web_app_slot_name" {
+  description = "name of windows web app slot"
+  type = string
+  default = "winappslotSakshi"
 }
