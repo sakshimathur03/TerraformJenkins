@@ -31,7 +31,7 @@ pipeline {
                withCredentials([azureServicePrincipal(credentialsId: AZURE_CREDENTIALS_ID)]) {
                 bat 'az login --service-principal -u $CLIENT_ID -p $CLIENT_SECRET% --tenant $TENANT_ID'
                 bat 'az account set --subscription $SUBSCRIPTION_ID'
-                bat 'az webapp deploy --resource-group %RESOURCE_GROUP% --name %APP_SERVICE_NAME% --src-path webapi\\out --type zip'
+                bat 'az webapp deploy --resource-group %RESOURCE_GROUP% --name %APP_SERVICE_NAME% --src-path WebApplication3\\out --type zip'
               }
             }
         }
