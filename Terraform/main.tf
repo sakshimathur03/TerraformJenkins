@@ -14,12 +14,11 @@ resource "azurerm_service_plan" "app_service_plan" {
   os_type             = var.os_type
   sku_name            = var.sku_name
 }
-
-resource "azurerm_app_service" "app" {
+resource "azurerm_linux_web_app" "app" {
   name                = var.app_service_name
   location            = azurerm_resource_group.rg.location
   resource_group_name = azurerm_resource_group.rg.name
-  app_service_plan_id = azurerm_service_plan.app_service_plan.id
+  service_plan_id     = azurerm_service_plan.app_service_plan.id
 
   site_config {
     always_on = true
@@ -29,3 +28,4 @@ resource "azurerm_app_service" "app" {
     "WEBSITE_RUN_FROM_PACKAGE" = "1"
   }
 }
+
