@@ -1,8 +1,4 @@
-variable "subscription_id" {
-  description = "Subscription id of the account"
-  type = string
-  default = "2f1ef4d2-8798-474f-81d1-d2fc16c553b6"
-}
+
 
 variable "location" {
     description = "location of service"
