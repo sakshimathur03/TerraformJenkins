@@ -22,18 +22,13 @@ pipeline {
  }
  }
  }
-
-     stage('Build') {
-            steps {
-                bat 'dotnet restore'
-                bat 'dotnet build --configuration Release'
-                bat 'dotnet publish -c Release -o ./publish'
-            }
-        }
     stage('Publish .NET 8 Web API') {
        steps {
           dir('WebApplication3') {
-            bat 'dotnet publish -c Release -o out'
+              bat 'dotnet restore'
+                bat 'dotnet build --configuration Release'
+                bat 'dotnet publish -c Release -o ./publish'
+            }
  }
  }
  }
