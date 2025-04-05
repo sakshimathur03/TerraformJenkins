@@ -1,6 +1,6 @@
 provider "azurerm" {
   features {}
-  subscription_id = var.subscription_id
+  subscription_id = "2f1ef4d2-8798-474f-81d1-d2fc16c553b6"
 }
 
 resource "azurerm_resource_group" "rgasp" {
