@@ -1,39 +1,43 @@
 pipeline {
     agent any
-
     environment {
-         AZURE_CREDENTIALS_ID = 'AZURE_CREDENTIALS'
-        RESOURCE_GROUP = 'rg-jenkins'
-        APP_SERVICE_NAME = 'MyAppTerraform'
+        AZURE_CREDENTIALS_ID = 'AZURE_CREDENTIALS'
+        RESOURCE_GROUP = 'rg-jenkins-terraform'
+        APP_SERVICE_NAME = 'webapijenkins3425'
     }
 
     stages {
-        stage('Terraform Init & Apply') {
+        stage('Checkout Code') {
             steps {
-                dir('Terraform') {
-                    bat 'terraform init'
-                    bat 'terraform plan -out=tfplan'
-                    bat 'terraform apply -auto-approve tfplan'
-                }
+                git branch: 'main', url: 'https://github.com/sakshimathur03/TerraformJenkins.git'
             }
         }
 
-        stage('Publish .NET 8 Web API') {
+        stage('Build') {
             steps {
-                dir('WebApplication3') {
-                    bat 'dotnet publish -c Release -o out'
-                }
+                bat 'dotnet restore'
+                bat 'dotnet build --configuration Release'
+                bat 'dotnet publish -c Release -o ./publish'
             }
         }
 
-        stage('Deploy to Azure App Service') {
+        stage('Deploy') {
             steps {
-               withCredentials([azureServicePrincipal(credentialsId: AZURE_CREDENTIALS_ID)]) {
-                bat 'az login --service-principal -u $CLIENT_ID -p $CLIENT_SECRET% --tenant $TENANT_ID'
-                bat 'az account set --subscription $SUBSCRIPTION_ID'
-                bat 'az webapp deploy --resource-group %RESOURCE_GROUP% --name %APP_SERVICE_NAME% --src-path WebApplication3\\out --type zip'
-              }
+                withCredentials([azureServicePrincipal(credentialsId: AZURE_CREDENTIALS_ID)]) {
+                    bat "az login --service-principal -u $AZURE_CLIENT_ID -p $AZURE_CLIENT_SECRET --tenant $AZURE_TENANT_ID"
+                    bat "powershell Compress-Archive -Path ./publish/* -DestinationPath ./publish.zip -Force"
+                    bat "az webapp deploy --resource-group $RESOURCE_GROUP --name $APP_SERVICE_NAME --src-path ./publish.zip --type zip"
+                }
             }
+        }
+    }
+
+    post {
+        success {
+            echo 'Deployment Successful!'
+        }
+        failure {
+            echo 'Deployment Failed!'
         }
     }
 }
