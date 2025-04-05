@@ -2,6 +2,7 @@ pipeline {
     agent any
 
     environment {
+         AZURE_CREDENTIALS_ID = 'AZURE_CREDENTIALS'
         RESOURCE_GROUP = 'rg-jenkins'
         APP_SERVICE_NAME = 'MyAppTerraform'
     }
