@@ -30,7 +30,7 @@ variable "service_plan_name" {
 variable "sku_name" {
   description = "Pricing plan of the azure service plan"
   type = string
-  default = "standard"
+  default = "Free"
 }
 
 variable "linux_web_app_name" {
@@ -41,7 +41,7 @@ variable "linux_web_app_name" {
 variable "pricing_plan" {
   description = "Pricing plan of the azure service plan"
   type = string
-  default = "S1"
+  default = "F1"
 }
 
 variable "linux_web_app_slot_name" {
