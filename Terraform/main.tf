@@ -8,14 +8,22 @@ resource "azurerm_resource_group" "rg" {
   location = var.location
 }
 
-resource "azurerm_service_plan" "app_service_plan" {
+# Add a delay to allow Azure to propagate the resource group creation
+resource "time_sleep" "wait_after_rg" {
   depends_on = [azurerm_resource_group.rg]
+  create_duration = "30s"
+}
+
+resource "azurerm_service_plan" "app_service_plan" {
   name                = var.service_plan_name
   location            = azurerm_resource_group.rg.location
   resource_group_name = azurerm_resource_group.rg.name
   os_type             = var.os_type
   sku_name            = var.sku_name
+
+  depends_on = [time_sleep.wait_after_rg]
 }
+
 resource "azurerm_linux_web_app" "app" {
   name                = var.app_service_name
   location            = azurerm_resource_group.rg.location
@@ -30,4 +38,3 @@ resource "azurerm_linux_web_app" "app" {
     "WEBSITE_RUN_FROM_PACKAGE" = "1"
   }
 }
-
