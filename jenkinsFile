@@ -19,7 +19,7 @@ pipeline {
 
         stage('Publish .NET 8 Web API') {
             steps {
-                dir('webapi') {
+                dir('WebApplication3') {
                     bat 'dotnet publish -c Release -o out'
                 }
             }
