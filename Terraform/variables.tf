@@ -32,7 +32,7 @@ variable "sku_name" {
 variable "linux_web_app_name" {
   description = "name of the app service"
   type = string
-  default = "webapijenkins3425"
+  default = "webapijenkins0304"
 }
 variable "pricing_plan" {
   description = "Pricing plan of the azure service plan"
