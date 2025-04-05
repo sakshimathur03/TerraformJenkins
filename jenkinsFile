@@ -13,14 +13,31 @@ pipeline {
                 git branch: 'main', url: 'https://github.com/sakshimathur03/TerraformJenkins.git'
             }
         }
+        stage('Terraform Init') {
+          steps {
+           dir('Terraform') {
+              bat 'terraform init'
+               bat 'terraform plan -out=tfplan'
+               bat 'terraform apply -auto-approve tfplan'
+ }
+ }
+ }
 
-        stage('Build') {
+     stage('Build') {
             steps {
                 bat 'dotnet restore'
                 bat 'dotnet build --configuration Release'
                 bat 'dotnet publish -c Release -o ./publish'
             }
         }
+    stage('Publish .NET 8 Web API') {
+       steps {
+          dir('WebApplication3') {
+            bat 'dotnet publish -c Release -o out'
+ }
+ }
+ }
+
 
         stage('Deploy') {
             steps {
