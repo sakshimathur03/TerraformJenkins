@@ -1,24 +1,35 @@
-variable "location" {
-  type    = string
-  default = "East US"
-}
-
 variable "resource_group_name" {
-  type    = string
-  default = "rg-jenkins"
+  description = "The name of the resource group."
+  type        = string
+  default = 'rg-jenkins'
 }
 
-variable "app_service_plan_name" {
-  type    = string
-  default = "asp-my-app"
+variable "location" {
+  description = "The Azure region where resources will be created."
+  type        = string
+  default = 'westus'
 }
 
-variable "deployment_slot_name" {
-  type    = string
-  default = "staging_slot"
+variable "service_plan_name" {
+  description = "The name of the App Service Plan."
+  type        = string
+  default = 'my-app-plan'
 }
 
-variable "subscription_id" {
-  type    = string
-  default = "2f1ef4d2-8798-474f-81d1-d2fc16c553b6"
+variable "sku_name" {
+  description = "The SKU tier for the App Service Plan."
+  type        = string
+  default     = "B1" # Change as needed (e.g., F1, P1V2)
+}
+
+variable "os_type" {
+  description = "The operating system for the App Service (Linux or Windows)."
+  type        = string
+  default     = "Linux"
+}
+
+variable "app_service_name" {
+  description = "The name of the App Service."
+  type        = string
+  default = 'MyAppTerraform'
 }
