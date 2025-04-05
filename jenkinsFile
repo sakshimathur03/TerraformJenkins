@@ -8,7 +8,7 @@ pipeline {
  stages {
  stage('Terraform Intra init') {
  steps {
- dir('terraform') {
+ dir('Terraform') {
  bat 'terraform init'
 bat 'terraform plan -out=tfplan'
 bat 'terraform apply -auto-approve tfplan'
